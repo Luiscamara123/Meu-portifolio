@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luís Câmara | Portfólio</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg-color: #030712; 
+            --text-color: #f8fafc; 
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(6, 182, 212, 0.2);
+            --accent-color: #06b6d4; 
+            --secondary-accent: #38bdf8; 
+            --accent-glow: rgba(6, 182, 212, 0.25);
+            --card-hover: rgba(30, 41, 59, 0.9);
+            --modal-bg: #0f172a;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0fdf4; 
+            --text-color: #0f172a; 
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(6, 182, 212, 0.25);
+            --accent-color: #0891b2; 
+            --secondary-accent: #0284c7; 
+            --accent-glow: rgba(8, 145, 178, 0.25);
+            --card-hover: rgba(255, 255, 255, 0.95);
+            --modal-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, .watermark-name {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .watermark-name {
+            position: fixed;
+            font-size: 15vw;
+            font-weight: 800;
+            color: transparent;
+            -webkit-text-stroke: 2px var(--text-color);
+            opacity: 0.03;
+            z-index: -2;
+            white-space: nowrap;
+            top: 25%;
+            left: -5%;
+            transform: rotate(-10deg);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .background-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(130px);
+            z-index: -1;
+            transition: transform 0.2s ease-out;
+        }
+        .shape-1 {
+            width: 500px; height: 500px;
+            background: #0284c7;
+            top: 10%; left: 5%;
+            opacity: 0.18;
+        }
+        .shape-2 {
+            width: 550px; height: 550px;
+            background: var(--accent-color);
+            bottom: 5%; right: 5%;
+            opacity: 0.18;
+        }
+
+        .glass-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .glass-nav h2 { 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 0.2rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Estilo do Interruptor (Switch) de Tema */
+        .theme-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            backdrop-filter: blur(5px);
+            transition: background 0.3s ease;
+        }
+
+        .theme-switch-ball {
+            position: absolute;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        /* Quando estiver no modo claro (ou escuro, alterado via JS) */
+        [data-theme="light"] .theme-switch-ball {
+            transform: translateX(30px);
+        }
+
+        .theme-icons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 4px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        section { padding: 7rem 10%; overflow: hidden; }
+        
+        .parallax-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            white-space: nowrap;
+            opacity: 0.85;
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--text-color);
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 80vh;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding-top: 2rem;
+        }
+        .hero-text h1 {
+            font-size: 4.2rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .hero-text h1 span { 
+            color: var(--accent-color);
+        }
+        
+        .typed-text {
+            color: var(--secondary-accent);
+            border-right: 4px solid var(--secondary-accent);
+            white-space: nowrap;
+            animation: blink 0.75s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: var(--secondary-accent); }
+        }
+
+        .hero p { font-size: 1.2rem; font-weight: 400; opacity: 0.85; margin-top: 1rem; }
+
+        .profile-blob {
+            width: 420px; 
+            height: 420px;
+            background-image: url('24517.png'); 
+            background-size: cover;
+            background-position: center 20%;
+            box-shadow: 0 25px 50px rgba(6, 182, 212, 0.3);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: morph 8s ease-in-out infinite;
+            border: 3px solid var(--glass-border);
+            filter: contrast(1.05) saturate(1.05);
+        }
+        @keyframes morph {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        }
+
+        .about-editorial {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-statement {
+            font-size: 2rem;
+            line-height: 1.4;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .about-statement span { color: var(--accent-color); }
+
+        .about-details-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .about-details-box p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        .education { position: relative; }
+        .education-carousel-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+            gap: 1rem;
+        }
+        .education-container {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            padding: 1rem 0;
+            width: 100%;
+        }
+        .education-container::-webkit-scrollbar { display: none; }
+
+        .edu-card {
+            min-width: 340px;
+            max-width: 340px;
+            flex-shrink: 0;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+        .edu-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-color);
+        }
+        .edu-card h3 { color: var(--accent-color); font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        
+        /* Estilo discreto da Instituição */
+        .edu-institution {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--secondary-accent);
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .edu-card p { opacity: 0.85; margin-bottom: 0.5rem; font-weight: 400;}
+        .edu-card .year { font-weight: 600; background: var(--accent-color); color: #030712; padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.8rem; display: inline-block; margin-bottom: 1rem;}
+
+        .carousel-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .carousel-btn:hover {
+            background: var(--accent-color);
+            color: #030712;
+            border-color: var(--accent-color);
+        }
+
+        .projects { padding-left: 0; padding-right: 0; }
+        .projects .parallax-title { padding-left: 10%; }
+        .river-wrapper { width: 100%; overflow: hidden; padding: 2rem 0; }
+        .river-track {
+            display: flex; gap: 2rem; width: max-content;
+            animation: flowRiver 28s linear infinite;
+        }
+        .river-track:hover { animation-play-state: paused; }
+        @keyframes flowRiver { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .project-card {
+            width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow: hidden;
+            transition: transform 0.4s ease, background 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .project-img-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .project-card h3 { font-weight: 700; font-size: 1.3rem; }
+        .project-card p { font-weight: 400; line-height: 1.5; font-size: 0.9rem; opacity: 0.85; }
+        
+        .tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.2rem; }
+        .tags span { background: var(--secondary-accent); color: #030712; padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+
+        .card-details-btn {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--text-color);
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: auto;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .card-details-btn:hover {
+            background: var(--accent-color);
+            color: #030712;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background: var(--modal-bg);
+            border: 1px solid var(--glass-border);
+            width: 90%;
+            max-width: 650px;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        .modal-close:hover { background: var(--accent-color); color: #030712; }
+
+        .modal-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.8rem; color: var(--accent-color); }
+        .modal-desc { font-size: 1rem; line-height: 1.7; opacity: 0.9; margin-bottom: 1.5rem; }
+        .modal-specs { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; background: var(--bg-color); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--glass-border); }
+        .modal-specs p { font-size: 0.9rem; opacity: 0.85; }
+
+        .btn { text-decoration: none; color: #030712; background: var(--accent-color); border: 2px solid var(--accent-color); padding: 0.8rem 1.5rem; border-radius: 12px; text-align: center; font-weight: 600; transition: all 0.3s; font-family: inherit; display: inline-block; }
+        .btn:hover { background: transparent; color: var(--text-color); }
+
+        footer {
+            margin-top: auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--glass-border);
+            padding: 4rem 10% 2rem 10%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-info h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-info p {
+            opacity: 0.75;
+            font-weight: 400;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            text-decoration: none;
+            color: var(--text-color);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.8rem 1.5rem;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-5px);
+            background: var(--accent-color);
+            color: #030712;
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            opacity: 0.65;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .hidden { opacity: 0; transform: translateY(40px) scale(0.97); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .show { opacity: 1; transform: translateY(0) scale(1); }
+        
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--glass-bg);
+                backdrop-filter: blur(16px);
+                padding: 2rem 0;
+                border-bottom: 1px solid var(--glass-border);
+                gap: 1.5rem;
+                text-align: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .hero { justify-content: center; text-align: center; }
+            .watermark-name { top: 10%; font-size: 22vw; }
+            .about-editorial { grid-template-columns: 1fr; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .social-buttons { justify-content: center; }
+            .parallax-title { font-size: 2.5rem; }
+            .profile-blob { width: 320px; height: 320px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-name">LUÍS CÂMARA</div>
+
+    <div class="background-shape shape-1" id="shape1"></div>
+    <div class="background-shape shape-2" id="shape2"></div>
+
+    <header class="glass-nav">
+        <h2 onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Luís.</h2>
+        
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#inicio" onclick="toggleMenu()">Início</a></li>
+            <li><a href="#sobre" onclick="toggleMenu()">Sobre Mim</a></li>
+            <li><a href="#trajetoria" onclick="toggleMenu()">Trajetória</a></li>
+            <li><a href="#projetos" onclick="toggleMenu()">Projetos</a></li>
+            <li><a href="#contato" onclick="toggleMenu()">Contatos</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <!-- Interruptor moderno de Tema -->
+            <div class="theme-switch" id="themeToggleBtn" title="Alternar tema">
+                <div class="theme-icons">
+                    <span>🌙</span>
+                    <span>☀️</span>
+                </div>
+                <div class="theme-switch-ball"></div>
+            </div>
+            
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero hidden">
+            <div class="hero-text">
+                <h1>Oi, eu sou o<br><span id="typed-output" class="typed-text"></span></h1>
+                <p>Engenheiro de Software & Criador de Experiências Digitais.</p>
+            </div>
+            <div class="hero-image-container">
+                <div class="profile-blob"></div>
+            </div>
+        </section>
+
+        <section id="sobre" class="about hidden">
+            <h2 class="parallax-title" data-speed="1">Sobre Mim.</h2>
+            <div class="glass-card about-editorial">
+                <div class="about-statement">
+                    Transformando ideias lógicas em <span>interfaces digitais imersivas</span> e de alta performance.
+                </div>
+                <div class="about-details-box">
+                    <p>Prazer, sou <strong>Luís Câmara</strong>. Meu foco é projetar experiências web que unem engenharia limpa e design inteligente.</p>
+                    <p>Trabalho diariamente unindo tecnologias modernas para garantir que cada projeto seja rápido, responsivo e esteticamente impecável.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="trajetoria" class="education hidden">
+            <h2 class="parallax-title" data-speed="-1">Minha Trajetória.</h2>
+            <div class="education-carousel-wrapper">
+                <button class="carousel-btn" onclick="scrollEducation('left')">❮</button>
+                
+                <div class="education-container" id="eduContainer">
+                    <div class="glass-card edu-card">
+                        <span class="year">2021 - 2022</span>
+                        <h3>Fundamentos da Programação</h3>
+                        <div class="edu-institution">Senac</div>
+                        <p>Primeiros passos lógicos com lógica de programação, HTML5, CSS3 moderno e JavaScript básico.</p>
+                    </div>
+
+                    <div class="glass-card edu-card">
+                        <span class="year">2022 - 2024</span>
+                        <h3>Análise e Desenv. de Sistemas</h3>
+                        <div class="edu-institution">Faculdade Exemplo</div>
+                        <p>Graduação focada em engenharia de software, arquitetura de dados e metodologias ágeis.</p>
+                    </div>
+                    
+                    <div class="glass-card edu-card">
+                        <span class="year">2023</span>
+                        <h3>Desenvolvedor Fullstack JS</h3>
+                        <div class="edu-institution">Rocketseat / Alura</div>
+                        <p>Certificação intensiva em React, Node.js e construção de APIs RESTful estruturadas.</p>
+                    </div>
+                    
+                    <div class="glass-card edu-card">
+                        <span class="year">2024</span>
+                        <h3>UI/UX para Devs</h3>
+                        <div class="edu-institution">Escola de Design X</div>
+                        <p>Estudos avançados em usabilidade, micro-interações e prototipagem interativa.</p>
+                    </div>
+
+                    <div class="glass-card edu-card">
+                        <span class="year">2025</span>
+                        <h3>Cloud Computing & DevOps</h3>
+                        <div class="edu-institution">Instituto Tech</div>
+                        <p>Especialização em Docker, pipelines CI/CD e gerenciamento de servidores em nuvem.</p>
+                    </div>
+
+                    <div class="glass-card edu-card">
+                        <span class="year">2026</span>
+                        <h3>Especialista Front-end Sênior</h3>
+                        <div class="edu-institution">Ecossistema Tech Atual</div>
+                        <p>Foco total em performance web extrema, arquiteturas escaláveis e mentorias técnicas.</p>
+                    </div>
+                </div>
+
+                <button class="carousel-btn" onclick="scrollEducation('right')">❯</button>
+            </div>
+        </section>
+
+        <section id="projetos" class="projects hidden">
+            <h2 class="parallax-title" data-speed="1">Laboratório de Ideias.</h2>
+            <div class="river-wrapper">
+                <div class="river-track">
+                    
+                    <div class="glass-card project-card">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" alt="Sistema Financeiro" class="project-img-thumb">
+                        <h3>Sistema Financeiro</h3>
+                        <p>Dashboard minimalista para controle de gastos com gráficos em tempo real.</p>
+                        <div class="tags"><span>React</span><span>Chart.js</span></div>
+                        <button class="card-details-btn" onclick="openModal('Sistema Financeiro', 'Dashboard minimalista desenvolvido para controle rigoroso de gastos pessoais e corporativos com gráficos renderizados via WebGL em tempo real.', 'React, Chart.js, Tailwind CSS', 'Redução de 40% no tempo de processamento do DOM e alta fluidez em dispositivos mobile.', 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80')">Ver Detalhes ↗</button>
+                    </div>
+                    
+                    <div class="glass-card project-card">
+                        <img src="https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&w=600&q=80" alt="App de Clima 3D" class="project-img-thumb">
+                        <h3>App de Clima 3D</h3>
+                        <p>Previsão do tempo que renderiza o clima atual usando modelos 3D.</p>
+                        <div class="tags"><span>Three.js</span><span>API</span></div>
+                        <button class="card-details-btn" onclick="openModal('App de Clima 3D', 'Aplicação web imersiva que puxa dados meteorológicos externos e simula o clima atual através de modelos 3D interativos.', 'Three.js, OpenWeather API, JavaScript', 'Mapeamento otimizado de texturas mantendo a taxa constante de 60 FPS no navegador.', 'https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&w=600&q=80')">Ver Detalhes ↗</button>
+                    </div>
+                    
+                    <div class="glass-card project-card">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="E-commerce Ágil" class="project-img-thumb">
+                        <h3>E-commerce Ágil</h3>
+                        <p>Plataforma de vendas completa com foco extremo na velocidade de carregamento.</p>
+                        <div class="tags"><span>Next.js</span><span>Stripe</span></div>
+                        <button class="card-details-btn" onclick="openModal('E-commerce Ágil', 'Plataforma de comércio eletrônico focada estritamente na velocidade máxima de carregamento de páginas e conversão de vendas.', 'Next.js, Stripe API, Node.js', 'Nota máxima em performance no Google Lighthouse e integração blindada com gateways de pagamento.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80')">Ver Detalhes ↗</button>
+                    </div>
+
+                    <div class="glass-card project-card">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" alt="Sistema Financeiro" class="project-img-thumb">
+                        <h3>Sistema Financeiro</h3>
+                        <p>Dashboard minimalista para controle de gastos com gráficos em tempo real.</p>
+                        <div class="tags"><span>React</span><span>Chart.js</span></div>
+                        <button class="card-details-btn" onclick="openModal('Sistema Financeiro', 'Dashboard minimalista desenvolvido para controle rigoroso de gastos pessoais e corporativos com gráficos renderizados via WebGL em tempo real.', 'React, Chart.js, Tailwind CSS', 'Redução de 40% no tempo de processamento do DOM e alta fluidez em dispositivos mobile.', 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80')">Ver Detalhes ↗</button>
+                    </div>
+                    
+                    <div class="glass-card project-card">
+                        <img src="https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&w=600&q=80" alt="App de Clima 3D" class="project-img-thumb">
+                        <h3>App de Clima 3D</h3>
+                        <p>Previsão do tempo que renderiza o clima atual usando modelos 3D.</p>
+                        <div class="tags"><span>Three.js</span><span>API</span></div>
+                        <button class="card-details-btn" onclick="openModal('App de Clima 3D', 'Aplicação web imersiva que puxa dados meteorológicos externos e simula o clima atual através de modelos 3D interativos.', 'Three.js, OpenWeather API, JavaScript', 'Mapeamento otimizado de texturas mantendo a taxa constante de 60 FPS no navegador.', 'https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&w=600&q=80')">Ver Detalhes ↗</button>
+                    </div>
+                    
+                    <div class="glass-card project-card">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="E-commerce Ágil" class="project-img-thumb">
+                        <h3>E-commerce Ágil</h3>
+                        <p>Plataforma de vendas completa com foco extremo na velocidade de carregamento.</p>
+                        <div class="tags"><span>Next.js</span><span>Stripe</span></div>
+                        <button class="card-details-btn" onclick="openModal('E-commerce Ágil', 'Plataforma de comércio eletrônico focada estritamente na velocidade máxima de carregamento de páginas e conversão de vendas.', 'Next.js, Stripe API, Node.js', 'Nota máxima em performance no Google Lighthouse e integração blindada com gateways de pagamento.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80')">Ver Detalhes ↗</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="projectModal" onclick="closeModal(event)">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeModalButton()">✕</button>
+            <img src="" alt="Imagem do Projeto" class="modal-img" id="modalImg">
+            <h3 class="modal-title" id="modalTitle">Título do Projeto</h3>
+            <p class="modal-desc" id="modalDesc">Descrição detalhada do projeto aparecerá aqui.</p>
+            <div class="modal-specs">
+                <p><strong>Tecnologias:</strong> <span id="modalTech">Techs</span></p>
+                <p><strong>Desafio Técnico / Resultado:</strong> <span id="modalResult">Resultados</span></p>
+            </div>
+            <a href="#" class="btn" target="_blank">Acessar Repositório / Código</a>
+        </div>
+    </div>
+
+    <footer id="contato">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>Luís Câmara</h3>
+                <p>Vamos construir algo incrível juntos? Entre em contato pelas redes abaixo.</p>
+            </div>
+            
+            <div class="social-buttons">
+                <a href="https://wa.me/SEUNUMERO" target="_blank" class="social-btn">💬 WhatsApp</a>
+                <a href="https://instagram.com/SEU_INSTAGRAM" target="_blank" class="social-btn">📸 Instagram</a>
+                <a href="https://linkedin.com/in/SEU_LINKEDIN" target="_blank" class="social-btn">💼 LinkedIn</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 <strong>Luís Câmara</strong>. Todos os direitos reservados. Feito com café e código moderno.</p>
+        </div>
+    </footer>
+
+    <script>
+        const words = ["Luís Câmara", "Programador", "Dev Fullstack"];
+        let i = 0;
+
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    document.getElementById('typed-output').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000);
+                    return false;
+                }
+                setTimeout(loopTyping, 100);
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    document.getElementById('typed-output').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) {
+                        i++;
+                    } else {
+                        i = 0;
+                    }
+                    setTimeout(typingEffect, 500);
+                    return false;
+                }
+                setTimeout(loopDeleting, 50);
+            };
+            loopDeleting();
+        }
+        typingEffect();
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        /* Lógica atualizada para o Interruptor de Tema */
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const body = document.body;
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.setAttribute('data-theme', savedTheme);
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        function scrollEducation(direction) {
+            const container = document.getElementById('eduContainer');
+            const scrollAmount = 370;
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        const shape1 = document.getElementById('shape1');
+        const shape2 = document.getElementById('shape2');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            shape1.style.transform = `translate(-${x * 30}px, -${y * 30}px)`;
+            shape2.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
+        });
+
+        const modal = document.getElementById('projectModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalTech = document.getElementById('modalTech');
+        const modalResult = document.getElementById('modalResult');
+        const modalImg = document.getElementById('modalImg');
+
+        function openModal(title, desc, tech, result, imgSrc) {
+            modalTitle.innerText = title;
+            modalDesc.innerText = desc;
+            modalTech.innerText = tech;
+            modalResult.innerText = result;
+            modalImg.src = imgSrc;
+            modal.classList.add('active');
+        }
+
+        function closeModalButton() {
+            modal.classList.remove('active');
+        }
+
+        function closeModal(event) {
+            if (event.target === modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        const parallaxTitles = document.querySelectorAll('.parallax-title');
+        window.addEventListener('scroll', () => {
+            parallaxTitles.forEach((title) => {
+                const rect = title.getBoundingClientRect();
+                if(rect.top < window.innerHeight && rect.bottom > 0) {
+                    const moveAmount = (window.innerHeight - rect.top) * 0.12;
+                    const speed = title.getAttribute('data-speed');
+                    title.style.transform = `translateX(${moveAmount * speed}px)`;
+                }
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.hidden').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>
