@@ -161,7 +161,7 @@
             cursor: pointer;
         }
 
-        /* INTERRUPTOR DE MODO ESCURO ORIGINAL */
+        /* INTERRUPTOR DE MODO ESCURO */
         .theme-switch {
             position: relative;
             display: inline-block;
@@ -281,7 +281,7 @@
         .profile-blob {
             width: clamp(260px, 35vw, 420px); 
             height: clamp(260px, 35vw, 420px);
-            background-image: url('24517.png'); 
+            background-image: url('img-eu.png'); 
             background-size: cover;
             background-position: center 20%;
             box-shadow: 0 25px 50px rgba(6, 182, 212, 0.3);
@@ -296,34 +296,136 @@
             100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
         }
 
-        .about-editorial {
+        /* NOVA ESTRUTURA: SEÇÃO SOBRE MIM - SOLTA E COM MOVIMENTO */
+        .about-content-wrapper {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 3rem;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 4rem;
+            align-items: center; 
+        }
+
+        /* Animação surreal para a imagem */
+        .about-image-surreal {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/5;
+            display: flex;
+            justify-content: center;
             align-items: center;
+            animation: floatImage 6s ease-in-out infinite;
+        }
+
+        .surreal-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: morphShape 10s ease-in-out infinite both alternate;
+            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+
+        .surreal-img:hover {
+            transform: scale(1.03) rotate(-2deg);
+            box-shadow: 0 30px 60px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Brilho pulsante atrás da imagem */
+        .image-glow {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: var(--accent-color);
+            filter: blur(60px);
+            opacity: 0.25;
+            z-index: 1;
+            animation: pulseGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatImage {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes morphShape {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+            67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(0.9); opacity: 0.15; }
+            100% { transform: scale(1.1); opacity: 0.35; }
+        }
+
+        /* Texto solto, sem o card de vidro */
+        .about-editorial-loose {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2.5rem;
+            position: relative;
+            z-index: 2;
         }
 
         .about-statement {
-            font-size: clamp(1.4rem, 2.5vw, 2rem);
-            line-height: 1.4;
-            font-weight: 700;
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            line-height: 1.3;
+            font-weight: 800;
             letter-spacing: -0.5px;
         }
-        .about-statement span { color: var(--accent-color); }
+        
+        .about-statement span { 
+            color: var(--accent-color); 
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Marcador de destaque embaixo da palavra */
+        .about-statement span::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            background: var(--accent-glow);
+            z-index: -1;
+            transform: skewX(-15deg);
+        }
 
         .about-details-box {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            position: relative;
         }
+        
+        /* Linha sutil conectando os parágrafos ao lado esquerdo */
+        .about-details-box::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 5px;
+            width: 2px;
+            height: 90%;
+            background: linear-gradient(to bottom, var(--accent-color), transparent);
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
         .about-details-box p {
-            font-size: 1.05rem;
-            line-height: 1.7;
+            font-size: 1.1rem;
+            line-height: 1.8;
             font-weight: 400;
             opacity: 0.85;
         }
 
-        /* TRAJETÓRIA TOTALMENTE RESPONSIVA COM SUPORTE A SWIPE */
+        /* TRAJETÓRIA */
         .education { position: relative; }
         .education-carousel-wrapper {
             display: flex;
@@ -640,10 +742,23 @@
                 top: 12%; 
                 font-size: 20vw; 
             }
-            .about-editorial { 
+            
+            /* Ajustes Mobile da nova seção Sobre Mim */
+            .about-content-wrapper { 
                 grid-template-columns: 1fr; 
-                gap: 2.5rem;
+                gap: 3rem;
             }
+            .about-image-surreal {
+                width: 75%; /* Diminui um pouco para não colar nas bordas no celular */
+                margin: 0 auto;
+            }
+            .about-details-box::before {
+                display: none; /* Remove a linha lateral no celular para ganhar espaço */
+            }
+            .about-editorial-loose {
+                text-align: center; /* Centraliza o texto solto no mobile */
+            }
+            
             .footer-content { 
                 flex-direction: column; 
                 text-align: center; 
@@ -676,6 +791,9 @@
             .project-card {
                 width: 280px;
             }
+            .about-image-surreal {
+                width: 90%; 
+            }
         }
 
         @media (max-width: 480px) {
@@ -696,6 +814,9 @@
             .modal-container {
                 width: 95%;
                 padding: 1.5rem;
+            }
+            .about-image-surreal {
+                width: 100%; 
             }
         }
     </style>
@@ -738,15 +859,26 @@
             </div>
         </section>
 
+        <!-- SEÇÃO SOBRE MIM COM IMAGEM EM MOVIMENTO SURREAL E TEXTO SOLTO -->
         <section id="sobre" class="about hidden">
             <h2 class="parallax-title" data-speed="1">Sobre Mim.</h2>
-            <div class="glass-card about-editorial">
-                <div class="about-statement">
-                    Transformando ideias lógicas em <span>interfaces digitais imersivas</span> e de alta performance.
+            
+            <div class="about-content-wrapper">
+                <!-- Coluna da Imagem com Movimento Surreal -->
+                <div class="about-image-surreal">
+                    <img src="img-sobre-mim.png" alt="Foto de Luís Câmara" class="surreal-img">
+                    <div class="image-glow"></div>
                 </div>
-                <div class="about-details-box">
-                    <p>Prazer, sou <strong>Luís Câmara</strong>. Meu foco é projetar experiências web que unem engenharia limpa e design inteligente.</p>
-                    <p>Trabalho diariamente unindo tecnologias modernas para garantir que cada projeto seja rápido, responsivo e esteticamente impecável.</p>
+
+                <!-- Coluna do Texto (Solto, sem borda) -->
+                <div class="about-editorial-loose">
+                    <div class="about-statement">
+                        Transformando ideias lógicas em <span>interfaces digitais imersivas</span> e de alta performance.
+                    </div>
+                    <div class="about-details-box">
+                        <p>Prazer, sou <strong>Luís Câmara</strong>. Meu foco é projetar experiências web que unem engenharia limpa e design inteligente.</p>
+                        <p>Trabalho diariamente unindo tecnologias modernas para garantir que cada projeto seja rápido, responsivo e esteticamente impecável.</p>
+                    </div>
                 </div>
             </div>
         </section>
