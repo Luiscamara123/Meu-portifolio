@@ -108,11 +108,11 @@
             z-index: 100;
         }
 
-        .glass-nav h2 { 
-            font-weight: 800; 
-            font-size: 1.5rem; 
-            color: var(--accent-color);
+        .glass-nav .nav-logo { 
+            height: 60px;
+            width: auto;
             cursor: pointer;
+            object-fit: contain;
         }
 
         .nav-links {
@@ -829,7 +829,7 @@
     <div class="background-shape shape-2" id="shape2"></div>
 
     <header class="glass-nav">
-        <h2 onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Luís.</h2>
+        <img src="logo.png" alt="Logo Luís" class="nav-logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         
         <ul class="nav-links" id="navLinks">
             <li><a href="#inicio" onclick="toggleMenu()">Início</a></li>
